@@ -1,4 +1,3 @@
-package javaplacement;
 import java.util.Scanner;
 public class GithubQuizApplication {
 
