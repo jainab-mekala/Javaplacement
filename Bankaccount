@@ -1,0 +1,46 @@
+package javaplacement;
+import java.util.*;
+class Bankaccount {
+    int accountNumber;
+    String accountHolder;
+    double balance;
+    Scanner sc = new Scanner(System.in);
+    void createAccount() {
+        System.out.print("Enter Account Number: ");
+        accountNumber = sc.nextInt();
+        System.out.print("Enter Account Holder Name: ");
+        accountHolder = sc.next();
+        System.out.print("Enter Initial Balance: ");
+        balance = sc.nextDouble();
+    }
+    void deposit() {
+        System.out.print("Enter amount to deposit: ");
+        double amount = sc.nextDouble();
+        balance = balance + amount;
+    }
+    void withdraw() {
+        System.out.print("Enter amount to withdraw: ");
+        double amount = sc.nextDouble();
+        if(amount <= balance) {
+            balance = balance - amount;
+        } else {
+            System.out.println("Insufficient Balance");
+        }
+    }
+
+    void display() {
+        System.out.println("Account Number: " + accountNumber);
+        System.out.println("Account Holder: " + accountHolder);
+        System.out.println("Balance: " + balance);
+    }
+}
+public class Classexample {
+	public static void main(String[] args) {
+		 Bankaccount b = new Bankaccount();
+	        b.createAccount();
+	        b.deposit();
+	        b.withdraw();
+	        b.display();
+	}
+}
+
