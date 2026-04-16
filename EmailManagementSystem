@@ -1,0 +1,108 @@
+import java.util.*;
+
+class EmailAccount {
+    String name;
+    String department;
+    String email;
+    String password;
+
+    EmailAccount(String name, String department) {
+        this.name = name;
+        this.department = department;
+        this.email = generateEmail();
+        this.password = generatePassword();
+    }
+
+    // Generate Email
+    String generateEmail() {
+        return name.toLowerCase().replace(" ", "") + "@" + department.toLowerCase() + ".company.com";
+    }
+
+    // Generate Password
+    String generatePassword() {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890@#";
+        String pass = "";
+        Random r = new Random();
+
+        for (int i = 0; i < 8; i++) {
+            pass += chars.charAt(r.nextInt(chars.length()));
+        }
+        return pass;
+    }
+
+    // Display Info
+    void display() {
+        System.out.println("\n===== ACCOUNT DETAILS =====");
+        System.out.println("Name: " + name);
+        System.out.println("Department: " + department);
+        System.out.println("Email: " + email);
+        System.out.println("Password: " + password);
+    }
+}
+
+public class EmailManagementSystem {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        EmailAccount account = null;
+
+        while (true) {
+            System.out.println("\n===== EMAIL MANAGEMENT SYSTEM =====");
+            System.out.println("1. Create Account");
+            System.out.println("2. View Account");
+            System.out.println("3. Change Password");
+            System.out.println("4. Exit");
+            System.out.print("Enter choice: ");
+
+            int choice;
+
+            if (sc.hasNextInt()) {
+                choice = sc.nextInt();
+                sc.nextLine();
+            } else {
+                System.out.println("Invalid input!");
+                sc.next();
+                continue;
+            }
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter full name: ");
+                    String name = sc.nextLine();
+
+                    System.out.print("Enter department: ");
+                    String dept = sc.nextLine();
+
+                    account = new EmailAccount(name, dept);
+                    System.out.println("Account created successfully!");
+                    break;
+
+                case 2:
+                    if (account == null) {
+                        System.out.println("No account found.");
+                    } else {
+                        account.display();
+                    }
+                    break;
+
+                case 3:
+                    if (account == null) {
+                        System.out.println("Create account first.");
+                    } else {
+                        System.out.print("Enter new password: ");
+                        account.password = sc.nextLine();
+                        System.out.println("Password updated!");
+                    }
+                    break;
+
+                case 4:
+                    System.out.println("Exiting...");
+                    sc.close();
+                    return;
+
+                default:
+                    System.out.println("Invalid choice!");
+            }
+        }
+    }
+}
