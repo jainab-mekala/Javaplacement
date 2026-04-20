@@ -1,0 +1,178 @@
+import java.util.*;
+import java.io.*;
+
+class Stud {
+    int id;
+    String name;
+    int marks;
+
+    Stud(int id, String name, int marks) {
+        this.id = id;
+        this.name = name;
+        this.marks = marks;
+    }
+}
+
+public class StudentManagement {
+
+    static LinkedList<Stud> list = new LinkedList<>();
+    static final String FILE = "students.txt";
+
+    // Load from file
+    static void loadFromFile() {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(FILE));
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+                int id = Integer.parseInt(data[0]);
+                String name = data[1];
+                int marks = Integer.parseInt(data[2]);
+
+                list.add(new Stud(id, name, marks));
+            }
+            br.close();
+        } catch (Exception e) {
+            // first time file may not exist
+        }
+    }
+
+    // Save to file
+    static void saveToFile() {
+        try {
+            FileWriter fw = new FileWriter(FILE);
+            for (Stud s : list) {
+                fw.write(s.id + "," + s.name + "," + s.marks + "\n");
+            }
+            fw.close();
+        } catch (IOException e) {
+            System.out.println("Error saving file!");
+        }
+    }
+
+    // Add Student
+    static void addStudent(Scanner sc) {
+        System.out.print("Enter ID: ");
+        int id = sc.nextInt();
+        sc.nextLine();
+
+        System.out.print("Enter Name: ");
+        String name = sc.nextLine();
+
+        System.out.print("Enter Marks: ");
+        int marks = sc.nextInt();
+        sc.nextLine();
+
+        list.add(new Stud(id, name, marks));
+        saveToFile();
+
+        System.out.println("Student added!");
+    }
+
+    // Delete Student
+    static void deleteStudent(Scanner sc) {
+        System.out.print("Enter ID to delete: ");
+        int id = sc.nextInt();
+        sc.nextLine();
+
+        boolean removed = list.removeIf(s -> s.id == id);
+
+        if (removed) {
+            saveToFile();
+            System.out.println("Student deleted!");
+        } else {
+            System.out.println("Student not found.");
+        }
+    }
+
+    // Search Student
+    static void searchStudent(Scanner sc) {
+        System.out.print("Enter ID to search: ");
+        int id = sc.nextInt();
+        sc.nextLine();
+
+        for (Stud s : list) {
+            if (s.id == id) {
+                System.out.println("Found: " + s.id + " | " + s.name + " | " + s.marks);
+                return;
+            }
+        }
+
+        System.out.println("Student not found.");
+    }
+
+    // View Students
+    static void viewStudents() {
+        if (list.isEmpty()) {
+            System.out.println("No students available.");
+            return;
+        }
+
+        for (Stud s : list) {
+            System.out.println(s.id + " | " + s.name + " | " + s.marks);
+        }
+    }
+
+    // Sort by Marks
+    static void sortStudents() {
+        Collections.sort(list, (a, b) -> b.marks - a.marks);
+
+        System.out.println("\nSorted by Marks (High to Low):");
+        for (Stud s : list) {
+            System.out.println(s.id + " | " + s.name + " | " + s.marks);
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        loadFromFile();
+
+        while (true) {
+            System.out.println("\n===== STUDENT MANAGEMENT SYSTEM =====");
+            System.out.println("1. Add Student");
+            System.out.println("2. Delete Student");
+            System.out.println("3. Search Student");
+            System.out.println("4. View Students");
+            System.out.println("5. Sort by Marks");
+            System.out.println("6. Exit");
+            System.out.print("Enter choice: ");
+
+            int choice;
+
+            if (sc.hasNextInt()) {
+                choice = sc.nextInt();
+                sc.nextLine();
+            } else {
+                System.out.println("Invalid input!");
+                sc.next();
+                continue;
+            }
+
+            switch (choice) {
+                case 1:
+                    addStudent(sc);
+                    break;
+                case 2:
+                    deleteStudent(sc);
+                    break;
+                case 3:
+                    searchStudent(sc);
+                    break;
+                case 4:
+                    viewStudents();
+                    break;
+                case 5:
+                    sortStudents();
+                    break;
+                case 6:
+                    System.out.println("Exiting...");
+                    sc.close();
+                    return;
+                default:
+                    System.out.println("Invalid choice!");
+            }
+        }
+    }
+}
