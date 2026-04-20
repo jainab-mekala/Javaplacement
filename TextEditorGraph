@@ -1,0 +1,131 @@
+import java.util.*;
+
+class Nodee {
+    String text;
+    List<Nodee> next;
+
+    Nodee(String text) {
+        this.text = text;
+        this.next = new ArrayList<>();
+    }
+}
+
+public class TextEditorGraph {
+
+    static Nodee current;
+    static Stack<Nodee> undoStack = new Stack<>();
+    static Stack<Nodee> redoStack = new Stack<>();
+
+    // Add text (creates new node)
+    static void addText(String newText) {
+        Nodee newNode = new Nodee(newText);
+        current.next.add(newNode);
+
+        undoStack.push(current);
+        current = newNode;
+
+        redoStack.clear(); // clear redo history
+        System.out.println("Text added!");
+    }
+
+    // Undo
+    static void undo() {
+        if (!undoStack.isEmpty()) {
+            redoStack.push(current);
+            current = undoStack.pop();
+            System.out.println("Undo done!");
+        } else {
+            System.out.println("Nothing to undo.");
+        }
+    }
+
+    // Redo
+    static void redo() {
+        if (!redoStack.isEmpty()) {
+            undoStack.push(current);
+            current = redoStack.pop();
+            System.out.println("Redo done!");
+        } else {
+            System.out.println("Nothing to redo.");
+        }
+    }
+
+    // BFS to show all states
+    static void showAllStates() {
+        System.out.println("\nAll Text States (BFS):");
+
+        Queue<Nodee> q = new LinkedList<>();
+        Set<Nodee> visited = new HashSet<>();
+
+        q.add(current);
+
+        while (!q.isEmpty()) {
+            Nodee n = q.poll();
+
+            if (!visited.contains(n)) {
+                visited.add(n);
+                System.out.println(n.text);
+
+                for (Nodee child : n.next) {
+                    q.add(child);
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        current = new Nodee(""); // initial empty text
+
+        while (true) {
+            System.out.println("\n===== TEXT EDITOR =====");
+            System.out.println("Current Text: " + current.text);
+            System.out.println("1. Add Text");
+            System.out.println("2. Undo");
+            System.out.println("3. Redo");
+            System.out.println("4. Show All States (BFS)");
+            System.out.println("5. Exit");
+            System.out.print("Enter choice: ");
+
+            int choice;
+
+            if (sc.hasNextInt()) {
+                choice = sc.nextInt();
+                sc.nextLine();
+            } else {
+                System.out.println("Invalid input!");
+                sc.next();
+                continue;
+            }
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter new text: ");
+                    String text = sc.nextLine();
+                    addText(text);
+                    break;
+
+                case 2:
+                    undo();
+                    break;
+
+                case 3:
+                    redo();
+                    break;
+
+                case 4:
+                    showAllStates();
+                    break;
+
+                case 5:
+                    System.out.println("Exiting...");
+                    sc.close();
+                    return;
+
+                default:
+                    System.out.println("Invalid choice!");
+            }
+        }
+    }
+}
